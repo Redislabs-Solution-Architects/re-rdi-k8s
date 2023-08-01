@@ -1,0 +1,25 @@
+apiVersion: v1
+metadata:
+  name: redis-enterprise-mydb
+data:
+  password: ${REDB_PWD_B64}
+  username: ${REDB_USER_B64}
+kind: Secret
+type: Opaque
+---
+apiVersion: app.redislabs.com/v1alpha1
+kind: RedisEnterpriseDatabase
+metadata:
+  name: ${REDB_NAME}
+  labels:
+    app: redisdb
+spec:
+  memorySize: 100MB
+  shardCount: 1
+  databasePort: ${REDB_PORT}
+  databaseSecretName: redis-enterprise-mydb
+  modulesList:
+    - name: search
+      version: ${SEARCH_VERSION}
+    - name: ReJSON
+      version: ${JSON_VERSION}

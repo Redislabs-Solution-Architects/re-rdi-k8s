@@ -1,0 +1,19 @@
+apiVersion: v1
+metadata:
+  name: ${REC_NAME}
+data:
+  password: ${REC_PWD_B64}
+  username: ${REC_USER_B64}
+kind: Secret
+type: Opaque
+---
+apiVersion: "app.redislabs.com/v1"
+kind: "RedisEnterpriseCluster"
+metadata:
+  name: ${REC_NAME}
+  labels:
+    app: rec
+spec:
+  nodes: 3
+  servicesRiggerSpec:
+    databaseServiceType: load_balancer

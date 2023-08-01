@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rdi-cli
+  labels:
+    app: rdi-cli
+spec:
+  containers:
+    - name: rdi-cli
+      resources:
+        requests:
+          cpu: "250m"
+          memory: "256Mi"
+        limits:
+          cpu: "250m"
+          memory: "256Mi"
+      image: docker.io/redislabs/redis-di-cli:latest
+      volumeMounts:
+      - name: config-volume
+        mountPath: /app
+      - name: jobs-volume
+        mountPath: /app/jobs
+  volumes:
+    - name: config-volume
+      configMap:
+        name: redis-di-config
+        optional: true
+    - name: jobs-volume
+      configMap:
+        name: redis-di-jobs
+        optional: true

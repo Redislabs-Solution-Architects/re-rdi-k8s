@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ${POSTGRES_NAME}
+spec:
+  serviceName: ${POSTGRES_NAME}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${POSTGRES_NAME}
+  template:
+    metadata:
+      labels:
+       app: ${POSTGRES_NAME}
+    spec:
+      containers:
+        - name: ${POSTGRES_NAME}
+          args: ["-c", "wal_level=logical"]
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: ${POSTGRES_DB}
+            - name: POSTGRES_USER
+              value: ${POSTGRES_USER}
+            - name: POSTGRES_PASSWORD
+              value: ${POSTGRES_PWD}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:  
+  type: LoadBalancer
+  selector:
+    app: ${POSTGRES_NAME}
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
