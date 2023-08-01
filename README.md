@@ -752,6 +752,8 @@ Cleaning up an AWS K8S deployment turns out to be as messy as creating one.  eks
 
 - aws/destroy.sh:  The code below performs the following:
   - deletes all Redis database instances
+  - deletes the RE cluster, rdi + debezium pods and the entire postgres namespace
+  - via eksctl, deletes the IAM account used to create the EBS controller and the EKS cluster.
 
 ```bash
 DBS=$(kubectl -n re get redb -o jsonpath='{.items[*].metadata.name}' 2>/dev/null)
