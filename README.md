@@ -44,7 +44,7 @@ This is an automated script for building an environment of Redis Enterprise (RE)
 
 ## Installation <a name="installation"></a>
 ```bash
-git clone https://github.com/Redislabs-Solution-Architects/re-rdi-K8s.git && cd re-rdi-K8s
+git clone https://github.com/Redislabs-Solution-Architects/re-rdi-k8s.git && cd re-rdi-k8s
 ```
 
 ## Usage <a name="usage"></a>
