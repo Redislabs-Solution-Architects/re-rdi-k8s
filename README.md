@@ -43,12 +43,12 @@ This is an automated script for building an environment of Redis Enterprise (RE)
 
 ## Installation <a name="installation"></a>
 ```bash
-git clone https://github.com/Redislabs-Solution-Architects/redis-k8s.git && cd redis-k8s
+git clone https://github.com/Redislabs-Solution-Architects/re-rdi-k8s.git && cd re-rdi-k8s
 ```
 
 ## Usage <a name="usage"></a>
 ### Options
-- <k8s-type>  aws, azure, gcp, kind currently supported.
+- aws, azure, gcp, and kind currently supported.
 
 ### Execution Example
 ```bash
@@ -61,7 +61,7 @@ git clone https://github.com/Redislabs-Solution-Architects/redis-k8s.git && cd r
 ## Build Explanation - Step by Step <a name="build"></a>
 ### Step 1 - K8S Core <a name="k8s"></a>
 
-For all K8S environments, a 3-node cluster is built with external access to the RE database and the Postgres database.  LoadBalancers are utilized to expose the external IP address of both.  The Kind build is on the local hardware and control plane + worker nodes are implemented as Docker containers.  The AWS, Azure, and GCP builds yield VMs for the worker nodes.
+For all K8S environments, a 3-node cluster is built with external IP access to the RE database and the Postgres database.  LoadBalancers are utilized to expose the external IP address of both.  The Kind build is on the local hardware and control plane + worker nodes are implemented as Docker containers.  The AWS, Azure, and GCP builds yield VMs for the worker nodes.
 
 #### Architecture
 Below is a diagram of what gets built in Step 1.  
@@ -82,7 +82,7 @@ nodeGroups:
     desiredCapacity: 3
 ```
 ---
-- build.sh:  Of the four K8S platforms discussed here, AWS turns out to be most complex.  The AWS CLI is super complex.  The ekstcl script tool is intended to mask that CLI complexity; however, it has its own complexities.  eckstcl is using CloudFormation templates in the backgroud to simply the AWS K8S build.  Most of the code below is to enable Persistent Volumes against EBS.  Even ekstcl w/CloudFormation doesn't handle this automatically.
+- build.sh:  Of the four K8S platforms discussed here, AWS turns out to be most complex.  The AWS CLI is super complex.  The ekstcl script tool is intended to mask that CLI complexity; however, it has its own complexities.  eckstcl is using CloudFormation templates in the backgroud to simplify the AWS K8S build.  Most of the code below is to enable Persistent Volumes against EBS.  Even ekstcl w/CloudFormation doesn't handle this automatically.
 ```bash
 AWS_ID=$(aws sts get-caller-identity --query "Account" --output text)
 envsubst < $PWD/aws/config.yaml | eksctl create cluster -f -
@@ -132,7 +132,7 @@ gcloud container clusters create $USER-redis-cluster --num-nodes 3 --machine-typ
 ```
 
 #### Kind <a name="kind_build"></a>
-- config.yaml:  Creates a 3 worker node + 1 control plane node cluster.  Port 12000 is exposed for the Redis DB.
+- config.yaml:  Creates a three-worker node + control plane node cluster.  Port 12000 is exposed for the Redis DB.
 ```yaml
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
@@ -290,7 +290,7 @@ Below is a diagram of what gets built in Step 4.
 ![step_4](assets/Step_4.jpg) 
 
 #### Code
-- redb.yaml: Parameterized yaml below.  The config creates a 1-shard DB with a predefined port.  Search and JSON modules are enabled for this db.
+- redb.yaml: Parameterized yaml below.  The config creates a 1-shard DB with a predefined password and port.  Search and JSON modules are enabled for this db.
 ```yaml
 apiVersion: v1
 metadata:
@@ -370,7 +370,7 @@ applier:
   target_data_type: json
 ```
 ---
-- rdi-cli.yaml:  This is the K8S config for a pod that has the rdi executable in it.  I'm using this method to execute RDI commands within the K8S cluster.  Config maps for the RDI config and jobs are set up in the start.sh script.  The config below mounts those as volumes.
+- rdi-cli.yaml:  This is the K8S config for a pod that has the RDI executable in it.  I'm using this method to execute RDI commands within the K8S cluster.  Config maps for the RDI config and jobs are set up in the start.sh script.  The config below mounts those as volumes.
 ```yaml
 apiVersion: v1
 kind: Pod

@@ -2,7 +2,7 @@
 # Maker: Joey Whelan
 # Usage: start.sh
 # Description:  Builds a 3-worker K8S cluster.  Starts a 3-node Redis Enterpise cluster + Redis target DB, 
-# builds a Postgres source DB, deploys a Redis DI pod, builds and starts a Debezium pod.
+# builds a Postgres source DB, deploys a Redis DI CLI pod, and deploys a Debezium pod.
 
 case $1 in
     aws|azure|gcp|kind)
