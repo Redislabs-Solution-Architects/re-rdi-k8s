@@ -1,4 +1,4 @@
-# Redis Enterprise + RDI on K8S
+# Redis Enterprise + RDI on K8s
 
 ## Contents
 1.  [Summary](#summary)
@@ -7,7 +7,7 @@
 4.  [Installation](#installation)
 5.  [Usage](#usage)
 6.  [Build Explanation](#build)
-    1.  [Step 1 - K8S Core](#k8s)
+    1.  [Step 1 - K8s Core](#K8s)
         1.  [AWS](#aws_build)
         2.  [Azure](#azure_build)
         3.  [GCP](#gcp_build)
@@ -28,12 +28,12 @@
 
 
 ## Summary <a name="summary"></a>
-This is an automated script for building an environment of Redis Enterprise (RE), Redis Data Integration (RDI), and Postgres SQL on various Kubernetes (K8S) platforms.
+This is an automated script for building an environment of Redis Enterprise (RE), Redis Data Integration (RDI), and Postgres SQL on various Kubernetes (K8s) platforms.
 
 ## Features <a name="features"></a>
-- Builds out a full RE and RDI w/Postgres ingress environment on K8S
+- Builds out a full RE and RDI w/Postgres ingress environment on K8s
 - BASH script that utilizes native Cloud Service Provider CLI commands and kubectl
-- Supports the following K8S environments:  AWS EKS, Azure AKS, Google Cloud GKE, Kind (local)
+- Supports the following K8s environments:  AWS EKS, Azure AKS, Google Cloud GKE, Kind (local)
 
 ## Prerequisites <a name="prerequisites"></a>
 - kubectl
@@ -44,7 +44,7 @@ This is an automated script for building an environment of Redis Enterprise (RE)
 
 ## Installation <a name="installation"></a>
 ```bash
-git clone https://github.com/Redislabs-Solution-Architects/re-rdi-k8s.git && cd re-rdi-k8s
+git clone https://github.com/Redislabs-Solution-Architects/re-rdi-K8s.git && cd re-rdi-K8s
 ```
 
 ## Usage <a name="usage"></a>
@@ -60,9 +60,9 @@ git clone https://github.com/Redislabs-Solution-Architects/re-rdi-k8s.git && cd 
 ```
 
 ## Build Explanation - Step by Step <a name="build"></a>
-### Step 1 - K8S Core <a name="k8s"></a>
+### Step 1 - K8s Core <a name="K8s"></a>
 
-For all K8S environments, a 3-node cluster is built with external IP access to the RE database and the Postgres database.  LoadBalancers are utilized to expose the external IP address of both.  The Kind build is on the local hardware and control plane + worker nodes are implemented as Docker containers.  The AWS, Azure, and GCP builds yield VMs for the worker nodes.
+For all K8s environments, a 3-node cluster is built with external IP access to the RE database and the Postgres database.  LoadBalancers are utilized to expose the external IP address of both.  The Kind build is on the local hardware and control plane + worker nodes are implemented as Docker containers.  The AWS, Azure, and GCP builds yield VMs for the worker nodes.
 
 #### Architecture
 Below is a diagram of what gets built in Step 1.  
@@ -83,7 +83,7 @@ nodeGroups:
     desiredCapacity: 3
 ```
 ---
-- build.sh:  Of the four K8S platforms discussed here, AWS turns out to be most complex.  The AWS CLI is super complex.  The ekstcl script tool is intended to mask that CLI complexity; however, it has its own complexities.  eckstcl is using CloudFormation templates in the backgroud to simplify the AWS K8S build.  Most of the code below is to enable Persistent Volumes against EBS.  Even ekstcl w/CloudFormation doesn't handle this automatically.
+- build.sh:  Of the four K8s platforms discussed here, AWS turns out to be most complex.  The AWS CLI is super complex.  The ekstcl script tool is intended to mask that CLI complexity; however, it has its own complexities.  eckstcl is using CloudFormation templates in the backgroud to simplify the AWS K8s build.  Most of the code below is to enable Persistent Volumes against EBS.  Even ekstcl w/CloudFormation doesn't handle this automatically.
 ```bash
 AWS_ID=$(aws sts get-caller-identity --query "Account" --output text)
 envsubst < $PWD/aws/config.yaml | eksctl create cluster -f -
@@ -109,7 +109,7 @@ eksctl create addon \
     --force
 ```
 #### Azure <a name="azure_build"></a>
-- build.sh:  K8S build on Azure is very straightforward.  You need a Resource Group.  In that Resource Group, you build a AKS cluster and enable the credentials to be written to your local kube config.  The Azure CLI commands below perform all three functions.
+- build.sh:  K8s build on Azure is very straightforward.  You need a Resource Group.  In that Resource Group, you build a AKS cluster and enable the credentials to be written to your local kube config.  The Azure CLI commands below perform all three functions.
 ```bash
 az group create \
     --name $USER-redis-cluster-ResourceGroup \
@@ -127,7 +127,7 @@ az aks get-credentials \
     --name $USER-redis-cluster \
 ```
 #### GCP <a name="gcp_build"></a>
---build.sh:  Google wins hands down on simplicity of K8S deployments.  The one-liner below creates the three-node K8S cluster.
+--build.sh:  Google wins hands down on simplicity of K8s deployments.  The one-liner below creates the three-node K8s cluster.
 ```bash
 gcloud container clusters create $USER-redis-cluster --num-nodes 3 --machine-type e2-standard-4
 ```
@@ -136,7 +136,7 @@ gcloud container clusters create $USER-redis-cluster --num-nodes 3 --machine-typ
 - config.yaml:  Creates a three-worker node + control plane node cluster.  Port 12000 is exposed for the Redis DB.
 ```yaml
 kind: Cluster
-apiVersion: kind.x-k8s.io/v1alpha4
+apiVersion: kind.x-K8s.io/v1alpha4
 nodes:
 - role: control-plane
   kubeadmConfigPatches:
@@ -175,7 +175,7 @@ nodes:
 ---
 - build.sh:  Applies the yaml above and creates a MetalLB loadbalancer.  As of this writing, Kind doesn't have a built-in loadbalancer.
 ```bash
-echo -e "\n*** Create K8S (Kind) Cluster ***"
+echo -e "\n*** Create K8s (Kind) Cluster ***"
 kind create cluster --config=$PWD/kind/config.yaml --name $USER-redis-cluster
 
 echo -e "\n*** Create Loadbalancer ***"
@@ -216,8 +216,8 @@ Below is a diagram of what gets built in Step 2.
 ```bash
 kubectl create namespace re
 kubectl config set-context --current --namespace=re
-RE_LATEST=`curl --silent https://api.github.com/repos/RedisLabs/redis-enterprise-k8s-docs/releases/latest | grep tag_name | awk -F'"' '{print $4}'`
-kubectl apply -f https://raw.githubusercontent.com/RedisLabs/redis-enterprise-k8s-docs/$RE_LATEST/bundle.yaml; sleep 1
+RE_LATEST=`curl --silent https://api.github.com/repos/RedisLabs/redis-enterprise-K8s-docs/releases/latest | grep tag_name | awk -F'"' '{print $4}'`
+kubectl apply -f https://raw.githubusercontent.com/RedisLabs/redis-enterprise-K8s-docs/$RE_LATEST/bundle.yaml; sleep 1
 kubectl rollout status deployment redis-enterprise-operator
 ```
 
@@ -371,7 +371,7 @@ applier:
   target_data_type: json
 ```
 ---
-- rdi-cli.yaml:  This is the K8S config for a pod that has the RDI executable in it.  I'm using this method to execute RDI commands within the K8S cluster.  Config maps for the RDI config and jobs are set up in the start.sh script.  The config below mounts those as volumes.
+- rdi-cli.yaml:  This is the K8s config for a pod that has the RDI executable in it.  I'm using this method to execute RDI commands within the K8s cluster.  Config maps for the RDI config and jobs are set up in the start.sh script.  The config below mounts those as volumes.
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -410,7 +410,7 @@ spec:
   - Sets shell vars for the RDI port and password.
   - Executes envsubst to plug those shell vars into a RDI config-template file and then redirects the output of that to a file named config.yaml.
   - Creates config maps for the RDI config.yaml and jobs.
-  - Deploys a K8S pod for the RDI executable.
+  - Deploys a K8s pod for the RDI executable.
   - Waits for the pod to be ready.
   - From the RDI pod, executes the RDI create command
   - Waits for the load balancer to be assigned an external address
@@ -443,7 +443,7 @@ Below is a diagram of what gets built in Step 6.
 ![step_6](assets/Step_6.jpg) 
 
 #### Code
-- postgres.yaml:  The K8S config below sets up a Postgres stateful set with 1 replica.  It is parameterized.  Those values will be provided from shell vars via envsubst.  Finally, a load-balancer is configured to provide external access to Postgres.
+- postgres.yaml:  The K8s config below sets up a Postgres stateful set with 1 replica.  It is parameterized.  Those values will be provided from shell vars via envsubst.  Finally, a load-balancer is configured to provide external access to Postgres.
 ```yaml
 apiVersion: apps/v1
 kind: StatefulSet
@@ -565,7 +565,7 @@ quarkus.log.console.json=false
 quarkus.http.port=8088
 ```
 ---
-- debezium.yaml: This is a K8S pod config for Debezium.  It mounts a config map (containing application.properties) as a volume.
+- debezium.yaml: This is a K8s pod config for Debezium.  It mounts a config map (containing application.properties) as a volume.
 ```yaml
 apiVersion: v1
 kind: Pod
@@ -608,7 +608,7 @@ kubectl wait --for=condition=ready pod --selector=app=debezium-server --timeout=
 ```
 
 ## Sample Results <a name="results"></a>
-### K8S Cluster Environment (GCP)
+### K8s Cluster Environment (GCP)
 ```bash
 kubectl get nodes
 ```
@@ -619,7 +619,7 @@ gke-joeywhelan-redis-clu-default-pool-0c5054fd-2s06   Ready    <none>   14m   v1
 gke-joeywhelan-redis-clu-default-pool-0c5054fd-6l9s   Ready    <none>   14m   v1.27.2-gke.1200
 ```
 
-### RE + RDI K8S Environment
+### RE + RDI K8s Environment
 ```bash
 kubectl -n re get all
 ```
@@ -749,7 +749,7 @@ Performance Statistics per Batch (batch size: 2000)
 
 ## Clean-up Explanation
 ### AWS <a name="aws-destroy"></a>
-Cleaning up an AWS K8S deployment turns out to be as messy as creating one.  eksctl doesn't clean up after itself very well.  In particular, if you have any external IP addresses that were allocated for the K8S cluster - you need to manually delete the objects those addresses are associated with.  In this scenario - load balancers were created for each Redis DB.  So, the Redis DBs need to be deleted to trigger deletion of their associated load balancers.  Similarly, the Postgres pod + load balancer needs to be deleted.  Following the external IP clean up, you can use eksctl to delete the remainder items created during build.
+Cleaning up an AWS K8s deployment turns out to be as messy as creating one.  eksctl doesn't clean up after itself very well.  In particular, if you have any external IP addresses that were allocated for the K8s cluster - you need to manually delete the objects those addresses are associated with.  In this scenario - load balancers were created for each Redis DB.  So, the Redis DBs need to be deleted to trigger deletion of their associated load balancers.  Similarly, the Postgres pod + load balancer needs to be deleted.  Following the external IP clean up, you can use eksctl to delete the remainder items created during build.
 
 - aws/destroy.sh:  The code below performs the following:
   - deletes all Redis database instances
@@ -779,7 +779,7 @@ eksctl delete cluster \
 ```
 
 ### Azure <a name="azure-destroy"></a>
-- azure/destoy.sh:  Just two commands to delete the entire K8S environment that was built prior:  delete the cluster and delete the resource group.
+- azure/destoy.sh:  Just two commands to delete the entire K8s environment that was built prior:  delete the cluster and delete the resource group.
 ```bash
 az aks delete \
     --name $USER-redis-cluster \
@@ -792,7 +792,7 @@ az group delete \
 ```
 
 ### GCP <a name="gcp-destroy"></a>
-- gcp/destroy.sh:  Similar to the GCP K8S build, deletion is super simple.
+- gcp/destroy.sh:  Similar to the GCP K8s build, deletion is super simple.
 ```bash
 gcloud container clusters delete  $USER-redis-cluster --quiet
 ```
