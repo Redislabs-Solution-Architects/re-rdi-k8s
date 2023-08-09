@@ -127,7 +127,7 @@ az aks get-credentials \
     --name $USER-redis-cluster \
 ```
 #### GCP <a name="gcp_build"></a>
---build.sh:  Google wins hands down on simplicity of K8s deployments.  The one-liner below creates the three-node K8s cluster.
+- build.sh:  Google wins hands down on simplicity of K8s deployments.  The one-liner below creates the three-node K8s cluster.
 ```bash
 gcloud container clusters create $USER-redis-cluster --num-nodes 3 --machine-type e2-standard-4
 ```
