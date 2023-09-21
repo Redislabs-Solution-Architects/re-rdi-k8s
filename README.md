@@ -41,6 +41,9 @@ This is an automated script for building an environment of Redis Enterprise (RE)
 - aws eksctl
 - azure cli
 - kind
+- jq
+- apg
+- envsubst
 
 ## Installation <a name="installation"></a>
 ```bash
